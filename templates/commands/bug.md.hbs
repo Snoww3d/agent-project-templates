@@ -1,0 +1,50 @@
+---
+description: Investigate and plan a bug fix before implementation
+allowed-tools: Read, Glob, Grep, Task, AskUserQuestion
+---
+
+# Bug Investigation & Planning
+
+This command helps investigate a bug before fixing it.
+
+## Phase 1: Reproduce the Bug
+
+1. Gather reproduction steps from the user
+2. Understand expected vs actual behavior
+3. Identify environment/conditions where bug occurs
+
+## Phase 2: Root Cause Analysis
+
+Explore the codebase to find:
+
+1. **Error location**: Where does the error occur?
+2. **Call chain**: What code path leads to the error?
+3. **Data flow**: What data is involved?
+4. **Recent changes**: Were there recent changes to this area?
+
+## Phase 3: Impact Assessment
+
+Determine:
+
+1. Severity of the bug
+2. Number of users affected
+3. Workarounds available
+4. Related areas that might have similar issues
+
+## Phase 4: Fix Plan
+
+Propose a fix with:
+
+1. Root cause explanation
+2. Proposed solution
+3. Files to modify
+4. Tests to add/update
+5. Regression risks
+
+## Phase 5: User Confirmation
+
+Present the fix plan to the user for approval before proceeding to implementation.
+
+---
+
+**Next step**: After planning is approved, use `/fix-bug` workflow to implement.

@@ -1,0 +1,176 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code when working with this repository.
+
+## Project Overview
+
+{{PROJECT_DESCRIPTION}}
+
+**Tech Stack**: {{TECH_STACK}}
+
+## Quick Start Commands
+
+{{#if docker}}
+### Docker (Recommended)
+
+```bash
+# Start all services
+cd {{DOCKER_DIR}}
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop services
+docker compose down
+
+# Rebuild after changes
+docker compose up -d --build
+```
+
+**Service URLs**:
+{{#each services}}
+- {{this.name}}: http://localhost:{{this.port}}
+{{/each}}
+{{/if}}
+
+{{#if backend}}
+### Backend Development
+
+```bash
+cd {{BACKEND_DIR}}
+{{BACKEND_INSTALL_CMD}}
+{{BACKEND_RUN_CMD}}
+```
+{{/if}}
+
+{{#if frontend}}
+### Frontend Development
+
+```bash
+cd {{FRONTEND_DIR}}
+{{FRONTEND_INSTALL_CMD}}
+{{FRONTEND_RUN_CMD}}
+```
+{{/if}}
+
+{{#if python}}
+### Python Development
+
+```bash
+cd {{PYTHON_DIR}}
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+{{PYTHON_RUN_CMD}}
+```
+{{/if}}
+
+## Architecture
+
+See [`docs/architecture.md`](docs/architecture.md) for visual diagrams.
+
+## Verification Standards
+
+{{#if docker}}
+**CRITICAL**: All implementation must be verified in the Docker environment.
+- Any feature involving service integration must be verified in the full Docker stack
+- Always include `docker compose up -d` instructions in verification plans
+{{else}}
+All implementation must be verified by running the full application locally.
+{{/if}}
+
+## Git Workflow
+
+- **ALWAYS create a Pull Request (PR) after pushing**
+- **NEVER push directly to `main`**
+- **ALWAYS check CI tests pass before merging**
+- Feature branches: `feature/<name>`
+- Bug fix branches: `fix/<name>`
+- Tech debt branches: `refactor/task-<id>-<name>`
+
+## Coding Standards
+
+{{#if frontend}}
+**Frontend**:
+- TypeScript with strict mode
+- Functional components with hooks
+- Run `{{FRONTEND_LINT_CMD}}` before committing
+{{/if}}
+
+{{#if backend}}
+**Backend**:
+- Follow language conventions
+- Run `{{BACKEND_FORMAT_CMD}}` before committing
+{{/if}}
+
+{{#if python}}
+**Python**:
+- Type hints with Pydantic models
+- Run `ruff check . && ruff format .` before committing
+{{/if}}
+
+## Key Files Reference
+
+{{KEY_FILES}}
+
+## Agentic Workflows & Skills
+
+### Workflows (Code Changes + PR)
+
+| Workflow | Purpose | Branch Prefix |
+|----------|---------|---------------|
+| `/create-feature` | New features | `feature/` |
+| `/fix-bug` | Bug fixes | `fix/` |
+| `/resolve-tech-debt` | Tech debt items | `refactor/task-N-` |
+
+### Skills (Quick Utilities)
+
+| Skill | Purpose |
+|-------|---------|
+{{#each skills}}
+| `{{this.name}}` | {{this.description}} |
+{{/each}}
+
+## Documentation Files to Update
+
+| Change Type | Files to Update |
+|-------------|-----------------|
+| New feature | `CLAUDE.md`, relevant standards doc |
+| New API endpoint | `CLAUDE.md`, `docs/standards/backend.md` |
+| Bug fix | `docs/tech-debt.md` (if tracked) |
+| Phase completion | `docs/development-plan.md` |
+
+## Task Tracking
+
+Use Claude Code's task system for tracking work items.
+
+**When to use tasks**:
+- Multi-step implementations
+- Tech debt tracking
+- Code review findings
+
+**Standard: 1 Task = 1 PR**
+
+Each task gets its own feature branch and PR.
+
+## Troubleshooting
+
+{{#if docker}}
+**Docker Issues**:
+- Rebuild images: `docker compose up -d --build`
+- Check logs: `docker compose logs -f [service-name]`
+- Reset volumes: `docker compose down -v` (WARNING: deletes data)
+{{/if}}
+
+{{#if backend}}
+**Backend Issues**:
+- Check dependencies are installed
+- Verify configuration/environment variables
+{{/if}}
+
+{{#if frontend}}
+**Frontend Issues**:
+- Clear node_modules: `rm -rf node_modules && npm install`
+- Check API URL configuration
+{{/if}}

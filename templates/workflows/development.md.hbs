@@ -1,0 +1,266 @@
+---
+description: Development workflow - handles features, bugs, and tech debt. Select mode when prompted.
+---
+
+# Development Workflow
+
+**Mode**: `feature` | `bug` | `tech-debt`
+
+When invoking this workflow, you will be prompted to select a mode.
+
+---
+
+## 1. Branch Setup
+
+// turbo
+1. Sync with main:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}
+   git checkout main && git pull origin main
+   ```
+
+// turbo
+2. Create branch based on mode:
+   - **feature**: `git checkout -b feature/<name>`
+   - **bug**: `git checkout -b fix/<name>`
+   - **tech-debt**: `git checkout -b refactor/task-<id>-<name>`
+
+---
+
+## 2. Pre-Implementation
+
+### For Bug Mode
+
+3. **Document before fixing**:
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Root cause analysis
+
+### For Tech Debt Mode
+
+3. **Mark task in progress**:
+   ```bash
+   TaskUpdate taskId="<id>" status="in_progress"
+   ```
+
+### For Feature Mode
+
+3. **Confirm requirements** and identify files to modify
+
+---
+
+## 3. Implementation
+
+4. Make changes following project standards in CLAUDE.md
+
+5. Update documentation per the "Documentation Files to Update" table in CLAUDE.md
+
+---
+
+## 4. Quality Checks
+
+{{#if frontend}}
+// turbo
+6. Frontend quality:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}/{{FRONTEND_DIR}}
+   {{FRONTEND_LINT_CMD}}
+   {{#if FRONTEND_FORMAT_CMD}}
+   {{FRONTEND_FORMAT_CMD}}
+   {{/if}}
+   ```
+{{/if}}
+
+{{#if backend}}
+// turbo
+7. Backend quality:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}/{{BACKEND_DIR}}
+   {{BACKEND_FORMAT_CMD}}
+   {{#if BACKEND_LINT_CMD}}
+   {{BACKEND_LINT_CMD}}
+   {{/if}}
+   ```
+{{/if}}
+
+{{#if python}}
+// turbo
+8. Python quality:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}/{{PYTHON_DIR}}
+   ruff check . && ruff format --check .
+   ```
+{{/if}}
+
+---
+
+## 5. Testing
+
+{{#if TEST_CMD}}
+9. Run tests:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}
+   {{TEST_CMD}}
+   ```
+{{/if}}
+
+{{#if has_e2e}}
+10. Run E2E tests:
+    ```bash
+    # cwd: {{PROJECT_ROOT}}/{{FRONTEND_DIR}}
+    {{E2E_CMD}}
+    ```
+{{/if}}
+
+---
+
+## 6. Verification
+
+{{#if docker}}
+11. Rebuild and verify Docker stack:
+    ```bash
+    # cwd: {{PROJECT_ROOT}}/{{DOCKER_DIR}}
+    docker compose up -d --build
+    ```
+
+12. Health checks:
+    ```bash
+    {{#each services}}
+    curl -s http://localhost:{{this.port}}/health || echo "{{this.name}} health check"
+    {{/each}}
+    ```
+{{else}}
+11. Run services locally and verify functionality:
+    {{#if backend}}
+    ```bash
+    # Terminal 1: Backend
+    cd {{PROJECT_ROOT}}/{{BACKEND_DIR}} && {{BACKEND_RUN_CMD}}
+    ```
+    {{/if}}
+    {{#if frontend}}
+    ```bash
+    # Terminal 2: Frontend
+    cd {{PROJECT_ROOT}}/{{FRONTEND_DIR}} && {{FRONTEND_RUN_CMD}}
+    ```
+    {{/if}}
+{{/if}}
+
+### For Bug Mode
+
+13. **Verify bug is fixed** - reproduce original steps and confirm fix
+
+---
+
+## 7. Commit & Push
+
+// turbo
+14. Stage and commit:
+    ```bash
+    git add -A && git commit -m "$(cat <<'EOF'
+    <type>: <description>
+
+    Co-Authored-By: Claude <noreply@anthropic.com>
+    EOF
+    )"
+    ```
+
+    **Commit types by mode**:
+    - **feature**: `feat: <description>`
+    - **bug**: `fix: <description>`
+    - **tech-debt**: `refactor: <description> (Task #<id>)`
+
+// turbo
+15. Push branch:
+    ```bash
+    git push -u origin <branch-name>
+    ```
+
+---
+
+## 8. Pull Request
+
+{{#if github}}
+// turbo
+16. Create PR:
+    ```bash
+    gh pr create --title "<type>: <description>" --body "$(cat <<'EOF'
+    ## Summary
+    <1-3 bullet points>
+
+    ## Test Plan
+    - [ ] <test item 1>
+    - [ ] <test item 2>
+
+    Generated with Claude Code
+    EOF
+    )"
+    ```
+{{else if gitlab}}
+// turbo
+16. Create MR:
+    ```bash
+    git push -o merge_request.create -o merge_request.title="<type>: <description>"
+    ```
+{{else}}
+16. Create PR/MR manually in your git platform
+{{/if}}
+
+---
+
+## 9. Review & Merge
+
+🛑 **STOP - DO NOT SKIP THIS STEP**
+
+{{#if github}}
+17. Open PR for user review:
+    ```bash
+    gh pr view --web
+    ```
+{{else if gitlab}}
+17. Open MR for user review:
+    ```bash
+    glab mr view --web
+    ```
+{{/if}}
+
+18. **Report to user**:
+    - PR/MR URL
+    - CI status
+    - Test plan results
+    - Ask: "Review in browser, then reply 'merge' or request changes"
+
+19. **Wait for explicit user approval** before proceeding
+
+20. After user approves:
+    {{#if github}}
+    ```bash
+    gh pr merge --squash --delete-branch
+    ```
+    {{else if gitlab}}
+    ```bash
+    glab mr merge --squash
+    ```
+    {{/if}}
+
+### For Tech Debt Mode
+
+21. Mark task complete:
+    ```bash
+    TaskUpdate taskId="<id>" status="completed"
+    ```
+
+---
+
+## 10. Cleanup
+
+// turbo
+22. Return to main:
+    ```bash
+    git checkout main && git pull
+    ```
+
+// turbo
+23. Prune stale refs:
+    ```bash
+    git fetch --prune
+    ```

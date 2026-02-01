@@ -1,0 +1,50 @@
+---
+description: Discover and plan tech debt resolution before implementation
+allowed-tools: Read, Glob, Grep, Task, TaskList, AskUserQuestion
+---
+
+# Tech Debt Discovery & Planning
+
+This command helps plan tech debt resolution before implementation.
+
+## Phase 1: Identify Tech Debt
+
+Options:
+
+1. **From task system**: Run `TaskList` to see tracked tech debt
+2. **From docs**: Check `docs/tech-debt.md` for documented issues
+3. **User-specified**: User describes a specific issue to address
+
+## Phase 2: Analyze the Issue
+
+For the selected tech debt item:
+
+1. **Current state**: What's wrong with the current implementation?
+2. **Desired state**: What should it look like after fixing?
+3. **Why it matters**: Performance? Security? Maintainability?
+4. **Dependencies**: Does this block or depend on other tasks?
+
+## Phase 3: Scope the Work
+
+Determine:
+
+1. Files to modify
+2. Tests to add/update
+3. Documentation to update
+4. Breaking changes (if any)
+
+## Phase 4: Resolution Plan
+
+Create a plan with:
+
+1. Step-by-step approach
+2. Verification criteria
+3. Rollback strategy (if risky)
+
+## Phase 5: User Confirmation
+
+Present the plan to the user for approval before proceeding to implementation.
+
+---
+
+**Next step**: After planning is approved, use `/resolve-tech-debt` workflow to implement.

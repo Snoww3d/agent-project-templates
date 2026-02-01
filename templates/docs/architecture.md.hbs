@@ -1,0 +1,106 @@
+# Architecture
+
+## System Overview
+
+```mermaid
+graph TB
+    subgraph "{{PROJECT_NAME}}"
+        {{#if frontend}}
+        FE[Frontend<br/>{{FRONTEND_TECH}}]
+        {{/if}}
+        {{#if backend}}
+        BE[Backend<br/>{{BACKEND_TECH}}]
+        {{/if}}
+        {{#if database}}
+        DB[(Database<br/>{{DATABASE_TECH}})]
+        {{/if}}
+    end
+
+    {{#if frontend}}
+    User((User)) --> FE
+    {{/if}}
+    {{#if frontend}}{{#if backend}}
+    FE --> BE
+    {{/if}}{{/if}}
+    {{#if backend}}{{#if database}}
+    BE --> DB
+    {{/if}}{{/if}}
+```
+
+## Component Diagram
+
+<!-- Add detailed component diagrams as the project evolves -->
+
+```mermaid
+graph LR
+    subgraph "Components"
+        A[Component A] --> B[Component B]
+        B --> C[Component C]
+    end
+```
+
+## Data Flow
+
+<!-- Document key data flows -->
+
+```mermaid
+sequenceDiagram
+    participant User
+    {{#if frontend}}
+    participant Frontend
+    {{/if}}
+    {{#if backend}}
+    participant Backend
+    {{/if}}
+    {{#if database}}
+    participant Database
+    {{/if}}
+
+    User->>Frontend: Action
+    {{#if backend}}
+    Frontend->>Backend: API Request
+    {{/if}}
+    {{#if database}}
+    Backend->>Database: Query
+    Database-->>Backend: Result
+    {{/if}}
+    {{#if backend}}
+    Backend-->>Frontend: Response
+    {{/if}}
+    Frontend-->>User: Update UI
+```
+
+## Directory Structure
+
+```
+{{PROJECT_NAME}}/
+├── {{#if frontend}}{{FRONTEND_DIR}}/{{/if}}
+├── {{#if backend}}{{BACKEND_DIR}}/{{/if}}
+├── {{#if python}}{{PYTHON_DIR}}/{{/if}}
+├── {{#if docker}}{{DOCKER_DIR}}/{{/if}}
+├── docs/
+│   ├── standards/
+│   ├── architecture.md
+│   ├── development-plan.md
+│   └── tech-debt.md
+├── .agent/
+│   └── workflows/
+└── CLAUDE.md
+```
+
+## Technology Stack
+
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+{{#if frontend}}
+| Frontend | {{FRONTEND_TECH}} | User interface |
+{{/if}}
+{{#if backend}}
+| Backend | {{BACKEND_TECH}} | API & business logic |
+{{/if}}
+{{#if database}}
+| Database | {{DATABASE_TECH}} | Data persistence |
+{{/if}}
+{{#if docker}}
+| Containerization | Docker | Service orchestration |
+{{/if}}

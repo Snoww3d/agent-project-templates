@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Project Template Context",
+  "description": "Schema for the context object passed to templates during scaffolding",
+  "type": "object",
+  "required": [
+    "PROJECT_NAME",
+    "PROJECT_ROOT",
+    "PROJECT_DESCRIPTION"
+  ],
+  "properties": {
+    "PROJECT_NAME": {
+      "type": "string",
+      "description": "Project identifier (e.g., 'my-awesome-app')"
+    },
+    "PROJECT_ROOT": {
+      "type": "string",
+      "description": "Absolute path to project root (e.g., '/Users/dev/projects/my-app')"
+    },
+    "PROJECT_DESCRIPTION": {
+      "type": "string",
+      "description": "One-line project description"
+    },
+    "TECH_STACK": {
+      "type": "string",
+      "description": "Comma-separated list of technologies (e.g., 'React, Node.js, PostgreSQL')"
+    },
+    "GENERATED_DATE": {
+      "type": "string",
+      "description": "Date when scaffolding was run (auto-generated)"
+    },
+    "frontend": {
+      "type": "boolean",
+      "description": "Whether project has a frontend"
+    },
+    "FRONTEND_DIR": {
+      "type": "string",
+      "description": "Relative path to frontend directory (e.g., 'frontend' or 'client')"
+    },
+    "FRONTEND_TECH": {
+      "type": "string",
+      "description": "Frontend technology (e.g., 'React', 'Vue', 'Next.js')"
+    },
+    "FRONTEND_INSTALL_CMD": {
+      "type": "string",
+      "description": "Command to install frontend dependencies (e.g., 'npm install')"
+    },
+    "FRONTEND_RUN_CMD": {
+      "type": "string",
+      "description": "Command to run frontend dev server (e.g., 'npm run dev')"
+    },
+    "FRONTEND_LINT_CMD": {
+      "type": "string",
+      "description": "Command to lint frontend code (e.g., 'npm run lint')"
+    },
+    "FRONTEND_FORMAT_CMD": {
+      "type": "string",
+      "description": "Command to format frontend code (e.g., 'npm run format')"
+    },
+    "backend": {
+      "type": "boolean",
+      "description": "Whether project has a backend"
+    },
+    "BACKEND_DIR": {
+      "type": "string",
+      "description": "Relative path to backend directory (e.g., 'backend' or 'server')"
+    },
+    "BACKEND_TECH": {
+      "type": "string",
+      "description": "Backend technology (e.g., '.NET', 'Node.js', 'Python/FastAPI')"
+    },
+    "BACKEND_INSTALL_CMD": {
+      "type": "string",
+      "description": "Command to install backend dependencies (e.g., 'dotnet restore')"
+    },
+    "BACKEND_RUN_CMD": {
+      "type": "string",
+      "description": "Command to run backend server (e.g., 'dotnet run')"
+    },
+    "BACKEND_FORMAT_CMD": {
+      "type": "string",
+      "description": "Command to format backend code (e.g., 'dotnet format')"
+    },
+    "BACKEND_LINT_CMD": {
+      "type": "string",
+      "description": "Command to lint backend code (optional)"
+    },
+    "python": {
+      "type": "boolean",
+      "description": "Whether project has a Python component"
+    },
+    "PYTHON_DIR": {
+      "type": "string",
+      "description": "Relative path to Python directory"
+    },
+    "PYTHON_RUN_CMD": {
+      "type": "string",
+      "description": "Command to run Python service (e.g., 'uvicorn main:app --reload')"
+    },
+    "database": {
+      "type": "boolean",
+      "description": "Whether project uses a database"
+    },
+    "DATABASE_TECH": {
+      "type": "string",
+      "description": "Database technology (e.g., 'MongoDB', 'PostgreSQL', 'MySQL')"
+    },
+    "docker": {
+      "type": "boolean",
+      "description": "Whether project uses Docker"
+    },
+    "DOCKER_DIR": {
+      "type": "string",
+      "description": "Relative path to docker-compose directory (e.g., 'docker' or '.')"
+    },
+    "services": {
+      "type": "array",
+      "description": "List of services with their ports",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Service name"
+          },
+          "port": {
+            "type": "integer",
+            "description": "Service port"
+          }
+        },
+        "required": ["name", "port"]
+      }
+    },
+    "github": {
+      "type": "boolean",
+      "description": "Whether project uses GitHub"
+    },
+    "gitlab": {
+      "type": "boolean",
+      "description": "Whether project uses GitLab"
+    },
+    "TEST_CMD": {
+      "type": "string",
+      "description": "Command to run tests"
+    },
+    "has_e2e": {
+      "type": "boolean",
+      "description": "Whether project has E2E tests"
+    },
+    "E2E_CMD": {
+      "type": "string",
+      "description": "Command to run E2E tests"
+    },
+    "skills": {
+      "type": "array",
+      "description": "List of project-specific skills",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Skill command name"
+          },
+          "description": {
+            "type": "string",
+            "description": "What the skill does"
+          }
+        },
+        "required": ["name", "description"]
+      }
+    },
+    "KEY_FILES": {
+      "type": "string",
+      "description": "Markdown-formatted list of key files"
+    }
+  }
+}

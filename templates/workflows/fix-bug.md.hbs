@@ -1,0 +1,216 @@
+---
+description: Fix a bug with full git workflow
+---
+
+# Fix Bug Workflow
+
+This workflow fixes a bug with proper branching, quality checks, and PR creation.
+
+**Mode**: Bug Fix
+
+---
+
+## 1. Branch Setup
+
+// turbo
+1. Sync with main:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}
+   git checkout main && git pull origin main
+   ```
+
+// turbo
+2. Create fix branch:
+   ```bash
+   git checkout -b fix/<name>
+   ```
+
+---
+
+## 2. Bug Reproduction
+
+3. **Document before fixing**:
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Root cause analysis
+
+---
+
+## 3. Implementation
+
+4. Make changes following project standards in CLAUDE.md
+
+5. Update documentation per the "Documentation Files to Update" table in CLAUDE.md
+
+---
+
+## 4. Quality Checks
+
+{{#if frontend}}
+// turbo
+6. Frontend quality:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}/{{FRONTEND_DIR}}
+   {{FRONTEND_LINT_CMD}}
+   ```
+{{/if}}
+
+{{#if backend}}
+// turbo
+7. Backend quality:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}/{{BACKEND_DIR}}
+   {{BACKEND_FORMAT_CMD}}
+   ```
+{{/if}}
+
+{{#if python}}
+// turbo
+8. Python quality:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}/{{PYTHON_DIR}}
+   ruff check . && ruff format --check .
+   ```
+{{/if}}
+
+---
+
+## 5. Testing
+
+{{#if TEST_CMD}}
+9. Run tests:
+   ```bash
+   {{TEST_CMD}}
+   ```
+{{/if}}
+
+{{#if has_e2e}}
+10. Run E2E tests:
+    ```bash
+    # cwd: {{PROJECT_ROOT}}/{{FRONTEND_DIR}}
+    {{E2E_CMD}}
+    ```
+{{/if}}
+
+---
+
+## 6. Verification
+
+{{#if docker}}
+11. Rebuild and verify Docker stack:
+    ```bash
+    # cwd: {{PROJECT_ROOT}}/{{DOCKER_DIR}}
+    docker compose up -d --build
+    ```
+{{else}}
+11. Run services locally
+{{/if}}
+
+12. **Verify bug is fixed** - reproduce original steps and confirm fix
+
+---
+
+## 7. Commit & Push
+
+// turbo
+13. Stage and commit:
+    ```bash
+    git add -A && git commit -m "$(cat <<'EOF'
+    fix: <description>
+
+    Co-Authored-By: Claude <noreply@anthropic.com>
+    EOF
+    )"
+    ```
+
+// turbo
+14. Push branch:
+    ```bash
+    git push -u origin fix/<name>
+    ```
+
+---
+
+## 8. Pull Request
+
+{{#if github}}
+// turbo
+15. Create PR:
+    ```bash
+    gh pr create --title "fix: <description>" --body "$(cat <<'EOF'
+    ## Summary
+    <1-3 bullet points describing the bug and fix>
+
+    ## Root Cause
+    <explanation of why the bug occurred>
+
+    ## Test Plan
+    - [ ] Reproduce original bug steps - now works correctly
+    - [ ] Regression test: <related functionality still works>
+
+    Generated with Claude Code
+    EOF
+    )"
+    ```
+{{else if gitlab}}
+// turbo
+15. Create MR:
+    ```bash
+    git push -o merge_request.create -o merge_request.title="fix: <description>"
+    ```
+{{else}}
+15. Create PR/MR manually in your git platform
+{{/if}}
+
+---
+
+## 9. Review & Merge
+
+🛑 **STOP - DO NOT SKIP THIS STEP**
+
+{{#if github}}
+16. Open PR for user review:
+    ```bash
+    gh pr view --web
+    ```
+{{else if gitlab}}
+16. Open MR for user review:
+    ```bash
+    glab mr view --web
+    ```
+{{/if}}
+
+17. **Report to user**:
+    - PR/MR URL
+    - CI status
+    - Confirmation bug is fixed
+    - Ask: "Review in browser, then reply 'merge' or request changes"
+
+18. **Wait for explicit user approval** before proceeding
+
+19. After user approves:
+    {{#if github}}
+    ```bash
+    gh pr merge --squash --delete-branch
+    ```
+    {{else if gitlab}}
+    ```bash
+    glab mr merge --squash
+    ```
+    {{/if}}
+
+---
+
+## 10. Cleanup
+
+// turbo
+20. Return to main:
+    ```bash
+    git checkout main && git pull
+    ```
+
+// turbo
+21. Prune stale refs:
+    ```bash
+    git fetch --prune
+    ```

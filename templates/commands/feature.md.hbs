@@ -1,0 +1,49 @@
+---
+description: Discover and plan a new feature before implementation
+allowed-tools: Read, Glob, Grep, Task, AskUserQuestion
+---
+
+# Feature Discovery & Planning
+
+This command helps investigate what's needed for a new feature before implementation.
+
+## Phase 1: Understand the Request
+
+1. Clarify the feature requirements with the user
+2. Identify acceptance criteria
+3. Determine scope boundaries
+
+## Phase 2: Codebase Analysis
+
+Explore the codebase to understand:
+
+1. **Related existing code**: Find similar features or patterns
+2. **Integration points**: Where will this feature connect?
+3. **Data models**: What models need to be created/modified?
+4. **API endpoints**: What endpoints are needed?
+5. **UI components**: What components are affected?
+
+## Phase 3: Impact Assessment
+
+Identify:
+
+1. Files that will be created
+2. Files that will be modified
+3. Tests that need to be written
+4. Documentation that needs updating
+
+## Phase 4: Implementation Plan
+
+Create a plan with:
+
+1. Step-by-step implementation order
+2. Dependencies between steps
+3. Verification criteria for each step
+
+## Phase 5: User Confirmation
+
+Present the plan to the user for approval before proceeding to implementation.
+
+---
+
+**Next step**: After planning is approved, use `/create-feature` workflow to implement.

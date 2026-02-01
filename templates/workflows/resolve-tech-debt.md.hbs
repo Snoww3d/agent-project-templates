@@ -1,0 +1,229 @@
+---
+description: Resolve tech debt with full git workflow
+---
+
+# Resolve Tech Debt Workflow
+
+This workflow resolves a tech debt item with proper branching, quality checks, and PR creation.
+
+**Mode**: Tech Debt
+
+---
+
+## 1. Branch Setup
+
+// turbo
+1. Sync with main:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}
+   git checkout main && git pull origin main
+   ```
+
+// turbo
+2. Create refactor branch:
+   ```bash
+   git checkout -b refactor/task-<id>-<name>
+   ```
+
+---
+
+## 2. Task Setup
+
+3. Mark task in progress:
+   ```bash
+   TaskUpdate taskId="<id>" status="in_progress"
+   ```
+
+4. Review the tech debt item details and plan the resolution
+
+---
+
+## 3. Implementation
+
+5. Make changes following project standards in CLAUDE.md
+
+6. Update documentation per the "Documentation Files to Update" table in CLAUDE.md
+
+7. Update `docs/tech-debt.md` to reflect resolution
+
+---
+
+## 4. Quality Checks
+
+{{#if frontend}}
+// turbo
+8. Frontend quality:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}/{{FRONTEND_DIR}}
+   {{FRONTEND_LINT_CMD}}
+   ```
+{{/if}}
+
+{{#if backend}}
+// turbo
+9. Backend quality:
+   ```bash
+   # cwd: {{PROJECT_ROOT}}/{{BACKEND_DIR}}
+   {{BACKEND_FORMAT_CMD}}
+   ```
+{{/if}}
+
+{{#if python}}
+// turbo
+10. Python quality:
+    ```bash
+    # cwd: {{PROJECT_ROOT}}/{{PYTHON_DIR}}
+    ruff check . && ruff format --check .
+    ```
+{{/if}}
+
+---
+
+## 5. Testing
+
+{{#if TEST_CMD}}
+11. Run tests:
+    ```bash
+    {{TEST_CMD}}
+    ```
+{{/if}}
+
+{{#if has_e2e}}
+12. Run E2E tests:
+    ```bash
+    # cwd: {{PROJECT_ROOT}}/{{FRONTEND_DIR}}
+    {{E2E_CMD}}
+    ```
+{{/if}}
+
+---
+
+## 6. Verification
+
+{{#if docker}}
+13. Rebuild and verify Docker stack:
+    ```bash
+    # cwd: {{PROJECT_ROOT}}/{{DOCKER_DIR}}
+    docker compose up -d --build
+    ```
+
+14. Verify functionality is maintained (no regressions)
+{{else}}
+13. Run services locally and verify no regressions
+{{/if}}
+
+---
+
+## 7. Commit & Push
+
+// turbo
+15. Stage and commit:
+    ```bash
+    git add -A && git commit -m "$(cat <<'EOF'
+    refactor: <description>
+
+    Task #<id>
+
+    Co-Authored-By: Claude <noreply@anthropic.com>
+    EOF
+    )"
+    ```
+
+// turbo
+16. Push branch:
+    ```bash
+    git push -u origin refactor/task-<id>-<name>
+    ```
+
+---
+
+## 8. Pull Request
+
+{{#if github}}
+// turbo
+17. Create PR:
+    ```bash
+    gh pr create --title "refactor: <description> (Task #<id>)" --body "$(cat <<'EOF'
+    ## Summary
+    <1-3 bullet points describing the tech debt and resolution>
+
+    ## Tech Debt Item
+    - **ID**: Task #<id>
+    - **Issue**: <what was wrong>
+    - **Resolution**: <what was fixed>
+
+    ## Test Plan
+    - [ ] Existing functionality works as before
+    - [ ] <specific test for the change>
+
+    Generated with Claude Code
+    EOF
+    )"
+    ```
+{{else if gitlab}}
+// turbo
+17. Create MR:
+    ```bash
+    git push -o merge_request.create -o merge_request.title="refactor: <description> (Task #<id>)"
+    ```
+{{else}}
+17. Create PR/MR manually in your git platform
+{{/if}}
+
+---
+
+## 9. Review & Merge
+
+🛑 **STOP - DO NOT SKIP THIS STEP**
+
+{{#if github}}
+18. Open PR for user review:
+    ```bash
+    gh pr view --web
+    ```
+{{else if gitlab}}
+18. Open MR for user review:
+    ```bash
+    glab mr view --web
+    ```
+{{/if}}
+
+19. **Report to user**:
+    - PR/MR URL
+    - CI status
+    - Test plan results
+    - Ask: "Review in browser, then reply 'merge' or request changes"
+
+20. **Wait for explicit user approval** before proceeding
+
+21. After user approves:
+    {{#if github}}
+    ```bash
+    gh pr merge --squash --delete-branch
+    ```
+    {{else if gitlab}}
+    ```bash
+    glab mr merge --squash
+    ```
+    {{/if}}
+
+22. Mark task complete:
+    ```bash
+    TaskUpdate taskId="<id>" status="completed"
+    ```
+
+---
+
+## 10. Cleanup
+
+// turbo
+23. Return to main:
+    ```bash
+    git checkout main && git pull
+    ```
+
+// turbo
+24. Prune stale refs:
+    ```bash
+    git fetch --prune
+    ```

@@ -1,0 +1,92 @@
+# Development Workflow
+
+## Branch Strategy
+
+| Branch Type | Prefix | Purpose |
+|-------------|--------|---------|
+| Feature | `feature/` | New functionality |
+| Bug Fix | `fix/` | Bug repairs |
+| Tech Debt | `refactor/task-N-` | Code improvements |
+
+## Workflow Steps
+
+### 1. Create Branch
+
+```bash
+git checkout main && git pull
+git checkout -b <prefix>/<description>
+```
+
+### 2. Implement Changes
+
+- Follow coding standards
+- Update documentation
+- Add/update tests
+
+### 3. Quality Checks
+
+{{#if frontend}}
+**Frontend**:
+```bash
+cd {{FRONTEND_DIR}}
+{{FRONTEND_LINT_CMD}}
+```
+{{/if}}
+
+{{#if backend}}
+**Backend**:
+```bash
+cd {{BACKEND_DIR}}
+{{BACKEND_FORMAT_CMD}}
+```
+{{/if}}
+
+### 4. Verification
+
+{{#if docker}}
+```bash
+cd {{DOCKER_DIR}}
+docker compose up -d --build
+```
+{{else}}
+Run all services locally and verify functionality.
+{{/if}}
+
+### 5. Create PR
+
+{{#if github}}
+```bash
+gh pr create --title "<type>: <description>" --body "..."
+```
+{{else}}
+Create PR/MR in your git platform.
+{{/if}}
+
+### 6. Review & Merge
+
+- Wait for CI to pass
+- Get user/team approval
+- Squash merge to main
+
+## Commit Message Format
+
+```
+<type>: <description>
+
+[optional body]
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+**Types**: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`
+
+## PR Description Template
+
+```markdown
+## Summary
+<1-3 bullet points>
+
+## Test Plan
+- [ ] Test item 1
+- [ ] Test item 2
+```
