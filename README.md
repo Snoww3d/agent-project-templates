@@ -12,18 +12,31 @@ This repository contains Handlebars-style templates that generate:
 - **Agents** - Custom specialized agents (code review)
 - **Documentation** - Standards, architecture, roadmap, tech debt tracking
 
-## Usage
+## Installation
 
-These templates are consumed by the `create-agent-project` Claude Code skill.
+Install the skill to your user-level Claude Code commands:
 
 ```bash
-# In Claude Code, run:
+# Clone the repo
+git clone https://github.com/Snoww3d/agent-project-templates.git
+cd agent-project-templates
+
+# Copy the skill to your Claude commands directory
+mkdir -p ~/.claude/commands
+cp skill/create-agent-project.md ~/.claude/commands/
+```
+
+## Usage
+
+Once installed, run the skill in any Claude Code session:
+
+```bash
 /create-agent-project
 ```
 
 The skill will:
 1. Ask questions about your project
-2. Clone this repository
+2. Clone this repository (templates)
 3. Process templates with your answers
 4. Generate customized files in your project
 
